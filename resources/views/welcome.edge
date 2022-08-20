@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdonisJS - A fully featured web framework for Node.js</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+    html,
+    body {
+      background-color: #F7F8FA;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      color: #46444c;
+      position: relative;
+    }
+
+    body:before {
+      content: '';
+      background: #5A45FF;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      position: absolute;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <br>
+  <br>
+  <br>
+
+
+
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <div class="container py-3">
+    <div class="row">
+      <div class="col-12 col-sm-8 col-md-6 mx-auto">
+        <div id="pay-invoice" class="card">
+          <div class="card-body">
+            <div class="card-title">
+              <h2 class="text-center">Single payment with credit card</h2>
+            </div>
+            <hr>
+            @if(flashMessages.has('cardError'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <strong>{{ flashMessages.get('cardError') }} !</strong>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            @endif
+
+            @if(flashMessages.has('cardDetected'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>{{ flashMessages.get('cardDetected') }} !</strong>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            @endif
+
+            <form action="/post-transaction" method="POST" autocomplete="off" aria-autocomplete="off">
+
+
+              <input class="form-control" id="token" name="token" type="hidden" placeholder=""
+                value="{{ flashMessages.get('token', '') ?? '' }}">
+
+              <span class="text-danger">
+                @if(flashMessages.has('errors.token'))
+                'Token missing, reload page'
+                @end
+
+              </span>
+
+              <h6 class="text-info">Order</h6>
+
+              <div class="row">
+
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="cvv">Amount</label>
+                    <input class="form-control" id="amount" name="amount" type="text" placeholder="0.00"
+                      value="{{ flashMessages.get('amount', '') ?? '' }}"
+                      oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');">
+
+                    <span class="text-danger">
+                      {{ flashMessages.get('errors.amount') ?? '' }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="form-group col-sm-6">
+                  <label for="ccyear">Currency</label>
+                  <select class="form-control" name="currency" id="currency">
+                    <option value="USD" {{ flashMessages.get('currency', '' )=='USD' ? 'selected' : '' }}>USD</option>
+                    <option value="EUR" {{ flashMessages.get('currency', '' )=='EUR' ? 'selected' : '' }}>EUR</option>
+                    <option value="THB" {{ flashMessages.get('currency', '' )=='THB' ? 'selected' : '' }}>THB</option>
+                    <option value="HKD" {{ flashMessages.get('currency', '' )=='HKD' ? 'selected' : '' }}>HKD</option>
+                    <option value="SGD" {{ flashMessages.get('currency', '' )=='SGD' ? 'selected' : '' }}>SGD</option>
+                    <option value="AUD" {{ flashMessages.get('currency', '' )=='AUD' ? 'selected' : '' }}>AUD</option>
+                  </select>
+
+                  <span class="text-danger">
+                    {{ flashMessages.get('errors.currency') ?? '' }}
+                  </span>
+                </div>
+
+              </div>
+
+              <br>
+
+
+              <div class="form-group has-success">
+                <label for="cc-name" class="control-label">Fullname</label>
+                <input name="fullname" type="text" class="form-control "
+                  value="{{ flashMessages.get('fullname', '') ?? '' }}">
+                <span class="text-danger">
+                  {{ flashMessages.get('errors.fullname') ?? '' }}
+                </span>
+              </div>
+
+              <br>
+
+
+              <h6 class="text-info">Card Details</h6>
+
+
+
+
+
+              <div class="form-group">
+                <label for="cc-number" class="control-label">Card Name</label>
+                <input id="cc-number" name="cardName" type="text" class="form-control"
+                  value="{{ flashMessages.get('cardName', '') ?? '' }}">
+                <span class="text-danger">
+                  {{ flashMessages.get('errors.cardName') ?? '' }}
+                </span>
+              </div>
+
+              <br>
+
+              <div class="form-group">
+                <label for="cc-number" class="control-label">Card No</label>
+                <input id="cc-number" name="cardNumber" type="tel" class="form-control "
+                  value="{{ flashMessages.get('cardNumber', '') ?? '' }}"
+                  onkeyup="this.value=this.value.replace(/[^\d]/,'')">
+                <span class="text-danger">
+                  {{ flashMessages.get('errors.cardNumber') ?? '' }}
+                </span>
+              </div>
+
+              <br>
+              <div class="row">
+                <div class="col-sm-12">
+                  <b for="" class="control-label">Expiration</b>
+                  <br>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-group col-sm-3">
+                  <label for="ccmonth">Month</label>
+                  <select class="form-control" name="month">
+                    <option value="">---</option>
+                    <option {{ flashMessages.get('month', '' )=='1' ? 'selected' : '' }}>1</option>
+                    <option {{ flashMessages.get('month', '' )=='2' ? 'selected' : '' }}>2</option>
+                    <option {{ flashMessages.get('month', '' )=='3' ? 'selected' : '' }}>3</option>
+                    <option {{ flashMessages.get('month', '' )=='4' ? 'selected' : '' }}>4</option>
+                    <option {{ flashMessages.get('month', '' )=='5' ? 'selected' : '' }}>5</option>
+                    <option {{ flashMessages.get('month', '' )=='6' ? 'selected' : '' }}>6</option>
+                    <option {{ flashMessages.get('month', '' )=='7' ? 'selected' : '' }}>7</option>
+                    <option {{ flashMessages.get('month', '' )=='8' ? 'selected' : '' }}>8</option>
+                    <option {{ flashMessages.get('month', '' )=='9' ? 'selected' : '' }}>9</option>
+                    <option {{ flashMessages.get('month', '' )=='10' ? 'selected' : '' }}>10</option>
+                    <option {{ flashMessages.get('month', '' )=='11' ? 'selected' : '' }}>11</option>
+                    <option {{ flashMessages.get('month', '' )=='12' ? 'selected' : '' }}>12</option>
+                  </select>
+
+                  <span class="text-danger">
+                    {{ flashMessages.get('errors.month') ?? '' }}
+                  </span>
+                </div>
+                <div class="form-group col-sm-3">
+                  <label for="ccyear">Year</label>
+                  <select class="form-control" name="year">
+                    <option value="">---</option>
+                    <option {{ flashMessages.get('year', '' )==2014 ? 'selected' : '' }}>2014</option>
+                    <option {{ flashMessages.get('year', '' )==2015 ? 'selected' : '' }}>2015</option>
+                    <option {{ flashMessages.get('year', '' )==2016 ? 'selected' : '' }}>2016</option>
+                    <option {{ flashMessages.get('year', '' )==2017 ? 'selected' : '' }}>2017</option>
+                    <option {{ flashMessages.get('year', '' )==2018 ? 'selected' : '' }}>2018</option>
+                    <option {{ flashMessages.get('year', '' )==2019 ? 'selected' : '' }}>2019</option>
+                    <option {{ flashMessages.get('year', '' )==2020 ? 'selected' : '' }}>2020</option>
+                    <option {{ flashMessages.get('year', '' )==2021 ? 'selected' : '' }}>2021</option>
+                    <option {{ flashMessages.get('year', '' )==2022 ? 'selected' : '' }}>2022</option>
+                    <option {{ flashMessages.get('year', '' )==2023 ? 'selected' : '' }}>2023</option>
+                    <option {{ flashMessages.get('year', '' )==2024 ? 'selected' : '' }}>2024</option>
+                    <option {{ flashMessages.get('year', '' )==2025 ? 'selected' : '' }}>2025</option>
+                  </select>
+                  <span class="text-danger">
+                    {{ flashMessages.get('errors.year') ?? '' }}
+                  </span>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input class="form-control" name="cvv" type="text" placeholder=""
+                      value="{{ flashMessages.get('cvv', '') ?? '' }}"
+                      onkeyup="this.value=this.value.replace(/[^\d]/,'')">
+                    <span class="text-danger">
+                      {{ flashMessages.get('errors.cvv') ?? '' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <br>
+              {{--
+              <div class="form-group">
+                <label for="x_zip" class="control-label">Postal code</label>
+                <input id="x_zip" name="x_zip" type="text" class="form-control" value="" data-val="true"
+                  data-val-required="Please enter the ZIP/Postal code" autocomplete="postal-code">
+                <span class="help-block" data-valmsg-for="x_zip" data-valmsg-replace="true"></span>
+              </div>
+
+              <br> --}}
+
+              <div>
+
+                <div class="d-grid gap-2">
+                  <button class="btn btn-success btn-lg" type="submit">
+                    <i class="fa fa-lock fa-lg"></i>&nbsp;
+                    <span id="payment-button-amount">
+                      Pay &nbsp;
+                      <span class="display-currency"></span>
+                      <span class="display-amount">0.00</span>
+
+                    </span>
+                    <span id="payment-button-sending" style="display:none;">Sending…</span>
+                  </button>
+                </div>
+
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+  </script>
+
+  <script src="https://js.braintreegateway.com/js/braintree-2.32.1.min.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+
+      setTimeout(() => {
+            $.get("/getToken",
+            function (data, textStatus, jqXHR) {
+              console.log(data.data);
+
+              $('#token').val(data.data);
+            }
+          );
+      }, 3000);
+
+// display amount pay button
+    $("#amount").keyup(function (e) {
+      let amount = $("#amount").val();
+      $(".display-amount").text(amount);
+    });
+
+    let currency = $("#currency").val();
+    let amount = $("#amount").val();
+    $(".display-currency").text(currency);
+    $(".display-amount").text(amount);
+
+
+
+    $("#currency").change(function () {
+      let currency = $(this).val();
+    $(".display-currency").text(currency);
+    });
+
+
+
+  });
+
+
+  </script>
+
+</body>
+
+</html>
