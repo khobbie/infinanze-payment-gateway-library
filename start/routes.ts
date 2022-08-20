@@ -21,8 +21,13 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/', async ({ view }) => {
-  return view.render('welcome')
+  return view.render('start')
 })
+
+Route.get("/pay/:payment_id", "PaymentGatwayController.checkout");
+
+Route.get("/confirmation/:payment_id", "PaymentGatwayController.confirmation");
+
 
 Route.get("/getToken", "PaymentGatwayController.getToken");
 Route.post("/post-transaction", "PaymentGatwayController.receiveTransaction");

@@ -1,5 +1,6 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import DB from '@ioc:Adonis/Lucid/Database'
 import BraintreeFunctions from '../../../library/functions/braintree_func';
 import CardNumberFormat from '../../../library/check_card_type';
 
@@ -7,10 +8,56 @@ import CardNumberFormat from '../../../library/check_card_type';
 
 export default class PaymentGatwayController {
 
+
+
   public async getToken({ request, response }: HttpContextContract) {
 
     // Get Braintress token
     return await BraintreeFunctions.getClientToken(response);
+
+
+  }
+
+  public async checkout({ view, params, response }: HttpContextContract) {
+      let payment_id = params.payment_id
+    //return payment_id;
+      const payment_receipt = await DB
+    .from('transactions')
+    .where('payment_id', payment_id)
+
+    // if payment id exit redirect to starting page
+    if(payment_receipt.toString().trim() == ""){
+      return view.render('checkout', {payment_id : params.payment_id})
+    }else{
+      return response.redirect().toPath('/')
+    }
+
+
+  }
+
+
+  public async confirmation({ view, params, response }: HttpContextContract) {
+
+    let payment_id = params.payment_id
+    //return payment_id;
+      const payment_receipt = await DB
+    .from('transactions')
+    .where('payment_id', payment_id)
+    .first()
+
+    // return payment_receipt.status;
+
+    // if payment id exit redirect to starting page
+    if(payment_receipt.toString().trim() == ""){
+      return response.redirect().toPath('/')
+
+    }else{
+      return view.render('confirmation', {payment_receipt: payment_receipt})
+
+    }
+
+
+
 
 
   }
@@ -30,6 +77,7 @@ export default class PaymentGatwayController {
         month: schema.number(),
         year: schema.number(),
         cvv: schema.number(),
+        payment_id: schema.string(),
         token: schema.string(),
         /*
                 creditCard: schema.object().members({
@@ -70,9 +118,6 @@ export default class PaymentGatwayController {
 
           session.flash('cardError', 'Card Detected : ' + card_type.toUpperCase() + " | Currency: (" + payload.currency + ") | AMEX is possible to use only for USD")
           session.flashAll()
-          console.log("*************************************");
-          console.log("AMEX is possible to use only for USD");
-          console.log("*************************************");
           response.redirect().back()
 
 
@@ -95,16 +140,14 @@ export default class PaymentGatwayController {
 
           session.flash('cardDetected', 'Card Detected : ' + card_type.toUpperCase() + " | Currency: (" + payload.currency + ") | PAYPAL PAYMENT GATEWAY")
           session.flashAll()
-          console.log("*************************************");
-          console.log("PAYPAL PAYMENT GATEWAY - ");
-          console.log("*************************************");
+
           response.redirect().back()
 
 
 
         } else {
 
-          return await BraintreeFunctions.receiveTransaction(payload, response);
+          return await BraintreeFunctions.receiveTransaction(payload, response, session);
 
 
         }
@@ -117,16 +160,14 @@ export default class PaymentGatwayController {
 
           session.flash('cardDetected', 'Card Detected : ' + card_type.toUpperCase() + " | Currency: (" + payload.currency + ") | PAYPAL PAYMENT GATEWAY")
           session.flashAll()
-          console.log("*************************************");
-          console.log("PAYPAL PAYMENT GATEWAY - ");
-          console.log("*************************************");
+
           response.redirect().back()
 
 
 
         } else {
 
-          return await BraintreeFunctions.receiveTransaction(payload, response);
+          return await BraintreeFunctions.receiveTransaction(payload, response, session);
         }
         return;
 
@@ -137,16 +178,14 @@ export default class PaymentGatwayController {
 
           session.flash('cardDetected', 'Card Detected : ' + card_type.toUpperCase() + " | Currency: (" + payload.currency + ") | PAYPAL PAYMENT GATEWAY")
           session.flashAll()
-          console.log("*************************************");
-          console.log("PAYPAL PAYMENT GATEWAY - ");
-          console.log("*************************************");
+
           response.redirect().back()
 
 
 
         } else {
 
-          return await BraintreeFunctions.receiveTransaction(payload, response);
+          return await BraintreeFunctions.receiveTransaction(payload, response, session);
 
         }
         return;
@@ -157,16 +196,14 @@ export default class PaymentGatwayController {
 
           session.flash('cardDetected', 'Card Detected : ' + card_type.toUpperCase() + " | Currency: (" + payload.currency + ") | PAYPAL PAYMENT GATEWAY")
           session.flashAll()
-          console.log("*************************************");
-          console.log("PAYPAL PAYMENT GATEWAY - ");
-          console.log("*************************************");
+
           response.redirect().back()
 
 
 
         } else {
 
-          return await BraintreeFunctions.receiveTransaction(payload, response);
+          return await BraintreeFunctions.receiveTransaction(payload, response, session);
 
         }
         return;

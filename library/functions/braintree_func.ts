@@ -25,55 +25,23 @@ async function getClientToken(response) {
 
 }
 
-async function receiveTransaction(payload, response) {
-/*
-  try {
-   await DB.table('transactions')
-    .insert(
-      {
-        amount: payload.amount,
-        currency: payload.currency,
-        customer_name: payload.fullname,
-      }
-    )
-  } catch (error) {
-    error.message
-  }
+async function receiveTransaction(payload, response, session) {
 
-// console.log(payload.amount);
-return;
- */
+
+  var status = ""
+  var transaction_id = ""
+  var transaction_response = ""
+  var transaction_response_message = ""
 
   // Get Braintress token
   await Braintree.transaction(payload.amount, "fake-valid-nonce", "")
     .then((res) => {
-      if (res.success == true) {
+
+      status = res.success ? "SUCCESS" : "FAILED";
+      transaction_response = res.transaction ?? res
+      transaction_id = res.transaction.id ? res.transaction.id : ""
 
 
-        // Save transaction into transaction table (Database)
-      let user =  DB.table('transactions')
-          .insert(
-            {
-              amount: payload.amount,
-              currency: payload.currency,
-              customer_name: payload.fullname,
-            }
-          )
-
-
-
-        return response.status(200).json({
-          'status': res.success,
-          'message': "Transaction completed successfully",
-          'data': res.trnsaction
-        })
-      } else {
-        return response.status(200).json({
-          'status': res.success,
-          'message': res.message,
-          'data': null
-        })
-      }
       console.log(res); return;
       // return response.status(200).json({
       //   'status': true,
@@ -89,6 +57,39 @@ return;
       //   'data': null
       // })
     })
+
+
+  var data = {
+    status: status,
+    amount: payload.amount,
+    currency: payload.currency,
+    customer_name: payload.fullname,
+    transaction_id: transaction_id,
+    payment_id: payload.payment_id,
+    response: JSON.stringify(transaction_response)
+  }
+
+  await DB.table('transactions')
+    .insert(
+      data
+    )
+
+
+  session.flash('TransactionConformation', JSON.stringify( data))
+
+
+  console.log("redirection to confirmation page");
+  response.redirect().toPath('/confirmation/' + payload.payment_id)
+
+
+  /*
+  // JSON Reponse
+    return response.status(200).json({
+      'status': status,
+      'message': "Transaction status",
+      'data': transaction_response
+    })
+*/
 
 
 }

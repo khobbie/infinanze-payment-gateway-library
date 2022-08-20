@@ -52,7 +52,7 @@
         <div id="pay-invoice" class="card">
           <div class="card-body">
             <div class="card-title">
-              <h2 class="text-center">Single payment with credit card</h2>
+              <h2 class="text-center">Single payment with credit card </h2>
             </div>
             <hr>
             @if(flashMessages.has('cardError'))
@@ -76,6 +76,9 @@
 
               <input class="form-control" id="token" name="token" type="hidden" placeholder=""
                 value="{{ flashMessages.get('token', '') ?? '' }}">
+
+                   <input class="form-control" id="payment_id" name="payment_id" type="hidden" placeholder=""
+                value="{{ payment_id }}">
 
               <span class="text-danger">
                 @if(flashMessages.has('errors.token'))

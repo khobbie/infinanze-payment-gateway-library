@@ -1,10 +1,17 @@
 # Single Payment (Braintree Payment Gatway) with Adonis Js
 
-
 ##  Setup and run Project
 <br>
 
 ### Rename `env.example` to `.env` 
+<br>
+
+### MySQL : Create database  `payment_gateway_db.sql`
+<br>
+
+### Run the sql query located in `/MYSQL_DUMP_BACKUP/payment_gateway_db.sql`
+<br>
+
 
 
     $ git clone https://github.com/khobbie/infinanze-payment-gateway-library.git

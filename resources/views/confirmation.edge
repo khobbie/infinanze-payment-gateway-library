@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdonisJS - A fully featured web framework for Node.js</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+    html,
+    body {
+      background-color: #F7F8FA;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      color: #46444c;
+      position: relative;
+    }
+
+    body:before {
+      content: '';
+      background: #5A45FF;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      position: absolute;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+  <br>
+  <br>
+  <br>
+
+
+
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <div class="container py-3">
+    <div class="row">
+      <div class="col-12 col-sm-8 col-md-6 mx-auto">
+        <div id="pay-invoice" class="card">
+          <div class="card-body">
+            <div class="card-title">
+              <h2 class="text-center"> Payment Receipt</h2>
+            </div>
+            <hr>
+
+
+
+            <dl class="row">
+              <dt class="col-sm-4 lead">Payment ID</dt>
+              <dd class="col-sm-7"> <b> {{ payment_receipt.payment_id }} </b> </dd>
+            </dl>
+
+            <dl class="row">
+              <dt class="col-sm-4 lead">Transaction ID</dt>
+              <dd class="col-sm-7"> <b> {{ payment_receipt.transaction_id }} </b> </dd>
+            </dl>
+
+
+
+            <dl class="row">
+              <dt class="col-sm-4 lead">Customer Name</dt>
+              <dd class="col-sm-7"> <b> {{ payment_receipt.customer_name }} </b> </dd>
+            </dl>
+
+
+
+            <dl class="row">
+              <dt class="col-sm-4 lead">Amount</dt>
+              <dd class="col-sm-7"> <b> {{ payment_receipt.amount + " "+ payment_receipt.amount }} </b> </dd>
+            </dl>
+
+
+            <dl class="row">
+              <dt class="col-sm-4 lead">Status</dt>
+              <dd class="col-sm-7"> <b> {{ payment_receipt.status }} </b> </dd>
+            </dl>
+
+            <br>
+
+            <div>
+              <a id="route-with-dyname-payment-id" href="/">
+                <div class="d-grid gap-2">
+
+                  <button class="btn btn-success btn-lg" type="button">
+                    <i class="fa fa-lock fa-lg"></i>&nbsp;
+                    <span id="payment-button-amount">
+                      Return Home &nbsp;
+
+                    </span>
+
+                  </button>
+
+                </div>
+              </a>
+
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+  </script>
+
+  <script src="https://js.braintreegateway.com/js/braintree-2.32.1.min.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+
+
+
+  });
+
+
+  </script>
+
+</body>
+
+</html>
